@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1 # will never be 2 orh higher for DBs
+  selector:
+    matchLabels:
+      component: postgres
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      volumes: # sets up request on pod to reah out to kubernetes and say which storage needed (allocates storage)
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage # identical to volume name declared above
+              mountPath: /var/lib/postgresql/data # data directory that postgres uses to store data on hard drive
+              subPath: postgres # any information stored here will be stored in folder called postgres inside of persistence volume claim; specific for postgres
+          env:
+            - name: POSTGRES_PASSWORD # take this instead of standard pw
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD

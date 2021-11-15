@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: 
+  name: database-persistent-volume-claim
+spec: # when pod comes with volume claim, kubernetes needs to find storage that meets this requirements
+  accessModes: # ReadWriteOnce -> Can be used by single node; ReadOnlyMany -> multiple nodes can read; ReadWriteMany -> read and written by many nodes
+    - ReadWriteOnce # "if you attached me to pod config, kubernetes needs to find storage that can be read/written by only one node"
+  resources:
+    requests:
+      storage: 2Gi # way overkill here
+# other possible options
+# storageClassName: [insert cloud provider]

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: worker
+  template:
+    metadata:
+      labels:
+        component: worker
+    spec:
+      containers:
+        - name: worker
+          image: degeb/docker-k8s-worker # no port needed because no inernal access in this pod
+          env: # environment variables
+            - name: REDIS_HOST # reference for container how to connect to redis
+              value: redis-cluster-ip-service # reference to redis cluster ip service -> name of that service
+            - name: REDIS_PORT
+              value: '6371' # wired up in redis-cluster-ip-service (redis default port)

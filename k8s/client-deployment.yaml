@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels:
+        component: web
+    spec:
+      containers:
+        - name: client
+          image: degeb/docker-k8s-client # degeb/... oder stephengrider? vllt neue repos für diese version erstellen
+          ports:
+            - containerPort: 3000
